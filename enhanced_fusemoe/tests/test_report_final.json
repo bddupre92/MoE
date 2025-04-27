@@ -1,0 +1,18 @@
+{
+    "timestamp": "2025-04-27 04:33:49",
+    "execution_time": 5.748346567153931,
+    "total_tests": 63,
+    "failures": 5,
+    "errors": 17,
+    "skipped": 0,
+    "success": false,
+    "success_percentage": 65.07936507936508,
+    "coverage": {
+        "total_coverage": 24.324324324324323,
+        "module_coverage": {
+            "models": 58.58747993579454,
+            "optimization": 12.0,
+            "utils": 5.83756345177665
+        }
+    }
+}

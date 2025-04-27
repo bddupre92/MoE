@@ -1,0 +1,14 @@
+{
+    "timestamp": "2025-04-27 11:52:57",
+    "execution_time": 0.0009448528289794922,
+    "total_tests": 0,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "success": true,
+    "success_percentage": 0,
+    "coverage": {
+        "total_coverage": 0.0,
+        "module_coverage": {}
+    }
+}
