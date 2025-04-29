@@ -1,0 +1,1 @@
+{"optimization_type":"end_to_end","algorithm_type":"nsga2","population_size":20,"generations":5,"islands":5,"objectives":["accuracy","f1","false_positive_rate","expert_balance"],"expert_weights":true,"gating_params":true,"model_complexity":true,"seed":42,"output_dir":".\/output"}

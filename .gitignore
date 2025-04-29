@@ -1,0 +1,162 @@
+# -----------------
+# OS-specific files
+# -----------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# -----------------
+# Python
+# -----------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.python-version
+
+# Pip environment files
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+.settings/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Pycharm project files
+*.iml
+*.ipr
+*.iws
+
+# Testing
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.tox/
+.pytest_cache/
+htmlcov/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Flask
+instance/
+.webassets-cache
+
+# -----------------
+# Logs and temp files
+# -----------------
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+*.swn
+
+# -----------------
+# Build outputs
+# -----------------
+build/
+dist/
+*.egg-info/
+.eggs/
+.eggs-info/
+*.egg
+
+# -----------------
+# Distribution archives
+# -----------------
+*.tar.gz
+*.zip
+*.whl
+
+# -----------------
+# Node.js
+# -----------------
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# -----------------
+# Docker
+# -----------------
+*.pid
+*.seed
+*.bak
+*.orig
+.dockerignore
+docker-compose.override.yml
+
+# -----------------
+# Git
+# -----------------
+*.orig
+*.rej
+
+# Ignore .env files (secrets!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore migrations if needed (optional)
+# **/migrations/
+
+# Ignore SQLite database files
+*.sqlite3
+
+# Ignore Backup files
+*~
+
+# Ignore JetBrains Rider
+.idea/
+
+# -----------------
+# Personal and Machine-specific
+# -----------------
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+*.local
+
+# Ignore MAC specific files
+.AppleDouble
+.LSOverride
+
+# Ignore Google Drive backups
+.gdoc
+.gslides
+.gsheet
+.gdraw
+.gtable
+.gform
+.ssh/
+.ssh/
