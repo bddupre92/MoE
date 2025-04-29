@@ -147,13 +147,14 @@ class FuseMoEAdapter:
             self.use_fallback = True
             return None
     
-    def adapt_data_for_fusemoe(self, X_data, y_data=None):
+    def adapt_data_for_fusemoe(self, X_data, y_data=None, physio_dim_expected=1):
         """
         Adapt our processed data format to be compatible with FuseMoE models.
         
         Args:
             X_data: DataFrame containing processed features
             y_data: Series containing target variable
+            physio_dim_expected: The expected dimension for the physio expert
             
         Returns:
             Tuple of (inputs, targets) in FuseMoE-compatible format
@@ -164,17 +165,17 @@ class FuseMoEAdapter:
         try:
             # Identify feature groups based on column names
             sleep_cols = [col for col in X_data.columns if any(s in col for s in 
-                         ['sleep_hours', 'deep_sleep', 'rem_sleep', 'light_sleep', 'awake_time', 'sleep_quality'])]
+                         ["sleep_hours", "deep_sleep", "rem_sleep", "light_sleep", "awake_time", "sleep_quality"])]
             
             weather_cols = [col for col in X_data.columns if any(s in col for s in 
-                           ['temperature', 'humidity', 'pressure', 'pressure_change'])]
+                           ["temperature", "humidity", "pressure", "pressure_change"])]
             
             stress_diet_cols = [col for col in X_data.columns if any(s in col for s in 
-                               ['stress_level', 'alcohol', 'caffeine', 'chocolate', 'processed_food', 'water_consumed'])]
+                               ["stress_level", "alcohol", "caffeine", "chocolate", "processed_food", "water_consumed"])]
             
-            # Remaining columns that aren't in the above groups and aren't demographic (age, sex)
+            # Remaining columns that aren"t in the above groups and aren"t demographic (age, sex)
             # are assumed to be physio features
-            demographic_cols = [col for col in X_data.columns if any(s in col for s in ['age', 'sex'])]
+            demographic_cols = [col for col in X_data.columns if any(s in col for s in ["age", "sex"])]
             physio_cols = [col for col in X_data.columns if col not in sleep_cols + weather_cols + 
                           stress_diet_cols + demographic_cols]
             
@@ -192,9 +193,9 @@ class FuseMoEAdapter:
             if len(physio_cols) > 0:
                 physio_data = torch.tensor(X_data[physio_cols].values, dtype=torch.float32)
             else:
-                # Create placeholder tensor with zeros
-                physio_data = torch.zeros((len(X_data), 1), dtype=torch.float32)
-                print("Warning: No physio features found. Using placeholder zeros.")
+                # Create placeholder tensor with zeros matching the expected dimension
+                physio_data = torch.zeros((len(X_data), physio_dim_expected), dtype=torch.float32)
+                print(f"Warning: No physio features found. Using placeholder zeros with shape {physio_data.shape}.")
             
             # Convert target to tensor if provided
             if y_data is not None:
@@ -206,10 +207,10 @@ class FuseMoEAdapter:
                 target_data = None
             
             return {
-                'sleep': sleep_data,
-                'weather': weather_data,
-                'stress_diet': stress_diet_data,
-                'physio': physio_data
+                "sleep": sleep_data,
+                "weather": weather_data,
+                "stress_diet": stress_diet_data,
+                "physio": physio_data
             }, target_data
             
         except Exception as e:
@@ -238,7 +239,7 @@ class FuseMoEMigraineModel(nn.Module):
         self.sleep_dim = self.config.get('sleep_dim', 6)  # total_sleep_hours, deep_sleep_pct, rem_sleep_pct, light_sleep_pct, awake_time_mins, sleep_quality
         self.weather_dim = self.config.get('weather_dim', 4)  # temperature, humidity, pressure, pressure_change_24h
         self.stress_diet_dim = self.config.get('stress_diet_dim', 6)  # stress_level, water_consumed_liters, alcohol_consumed, caffeine_consumed, chocolate_consumed, processed_food_consumed
-        self.physio_dim = self.config.get('physio_dim', 1)  # Placeholder for physio features (will be expanded when implemented)
+        self.physio_dim = self.config.get("physio_dim", 10)  # Placeholder increased to 10
         
         # Output dimension
         self.output_dim = self.config.get('output_dim', 1)  # Binary classification: has_migraine
@@ -438,7 +439,7 @@ def test_fusemoe_integration():
         sleep_data = torch.randn(batch_size, 6)  # Updated from 7x6 to 6
         weather_data = torch.randn(batch_size, 4)  # Updated from 5 to 4
         stress_diet_data = torch.randn(batch_size, 6)  # Unchanged
-        physio_data = torch.randn(batch_size, 1)  # Updated from 5 to 1 (placeholder)
+        physio_data = torch.randn(batch_size, 10)  # Updated from 1 to 10 (placeholder)
         
         # Create model
         model = create_fusemoe_model()
@@ -476,20 +477,16 @@ def test_with_processed_data():
         print("Processing data...")
         X_train, y_train, X_valid, y_valid, X_test, y_test = process_data()
         
-        # Create adapter
-        adapter = FuseMoEAdapter()
-        
-        # Adapt data for FuseMoE
-        print("Adapting data for FuseMoE...")
-        inputs, targets = adapter.adapt_data_for_fusemoe(X_train, y_train)
-        
-        if inputs is None or targets is None:
-            print("Failed to adapt data for FuseMoE.")
-            return False
-        
         # Create model
         print("Creating FuseMoE model...")
         model = create_fusemoe_model()
+        
+        # Create adapter instance
+        adapter = FuseMoEAdapter()
+        
+        # Adapt data for FuseMoE, passing the expected physio dimension
+        print("Adapting data for FuseMoE...")
+        inputs, targets = adapter.adapt_data_for_fusemoe(X_train, y_train, physio_dim_expected=model.physio_dim)
         
         # Forward pass
         print("Performing forward pass...")

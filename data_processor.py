@@ -245,10 +245,12 @@ def process_data():
         final_data['age'] = final_data.index.get_level_values('patient_id').map(profiles_indexed['age'])
         # Normalize age
         final_data['age'] = MinMaxScaler().fit_transform(final_data[['age']])
-    if 'sex' in profiles_indexed.columns:
+    if 'sex' in final_data.columns:
         # One-hot encode sex
         final_data = pd.get_dummies(final_data, columns=['sex'], prefix='sex', drop_first=True)
-    print("Added static features (age, sex encoding).")
+        print("Added static features (sex encoding).")
+    else:
+        print("Skipping sex encoding: 'sex' column not found.")
 
     # 8. Handle Remaining Missing Data (Post-Merge/Reindex)
     # Use forward fill then backward fill as a simple strategy
